@@ -5,14 +5,16 @@ import { SearchBar } from './search-bar/SearchBar';
 import { PlanetsList } from './planets-list/PlanetsList';
 import { SearchCount } from './search-count/SearchCount';
 import { planetService } from '../../services/planets-service';
+import { LoggerService } from '../../helpers/logger-service';
 
 
 export class PlanetSearch extends React.Component{
     debounceTimeout = null;
     searchLimit = 3;
+    displayResult = false;
     constructor(props){
         super(props);
-        //console.warn(props);
+        //LoggerService.warn(props);
         this.state = {
             filterText: '',
             planets : [],
@@ -36,6 +38,7 @@ export class PlanetSearch extends React.Component{
     }
 
     handleInputDebounce(textToSearch) {
+        LoggerService.log(textToSearch)
         if(this.debounceTimeout)
             clearTimeout(this.debounceTimeout)
 
@@ -47,6 +50,7 @@ export class PlanetSearch extends React.Component{
     searchPlanet = (searchedText) => {
         searchedText = searchedText.trim() || '';
         if(!searchedText.length){
+            this.displayResult = false
             this.resetPlanetList()
             return
         }
@@ -56,25 +60,31 @@ export class PlanetSearch extends React.Component{
         })
         planetService.planet_search(searchedText).then( planetsList => {
             if(planetsList.length){
-                
+                this.displayResult = true
                 this.setState({
                     planets: planetsList
 
                 });
-                console.warn(this.state)
+                LoggerService.warn(this.state)
             }else{
+                this.displayResult = true
                 this.resetPlanetList()
             }
             
         }, error => {
+            LoggerService.log(error);
+            this.displayResult = false
+            this.resetPlanetList()
             alert(error.message)
         })
     }
 
     resetPlanetList(){
+        
         this.setState({
             planets: []
         })
+
     }
 
     handleSearchAllowed(isAllowed){
@@ -84,12 +94,22 @@ export class PlanetSearch extends React.Component{
     }
 
     render(){
+        let planets_list;
         const {planets, triggerLimitizerCount, filterText, allowSearch} = this.state;
+
+        console.log(this.displayResult)
+        if(planets.length > 0 && this.displayResult){
+            planets_list = planets.length > 0 && <PlanetsList planets={planets}/>
+        }else if(this.displayResult){
+            planets_list = <h4 className="text-center"> No planet with this name </h4>
+        }
+
+
         return(
             <>
                 <SearchBar filterText={filterText} onPlanetSearch={this.handleSearchTextChange} allowSearch={allowSearch}/>
                 <SearchCount triggerLimitizerCount={triggerLimitizerCount} isSearchAllowed={this.handleSearchAllowed} searchLimit={this.searchLimit} />
-                {planets.length > 0 && <PlanetsList planets={planets}/> }
+                { planets_list }
             </>
         )
     }

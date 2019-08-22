@@ -2,10 +2,12 @@
 import React from 'react';
 import { planetService } from '../../services/planets-service';
 import { Link } from 'react-router-dom';
+import { LoggerService } from '../../helpers/logger-service';
 export class PlanetDetails extends React.Component{
     planetId;
     constructor(props){
         super(props);
+        LoggerService.log("PlanetDetails:: contructor");
         this.state = {
             planetDetail: {},
 
@@ -22,13 +24,17 @@ export class PlanetDetails extends React.Component{
             this.setState({
                 planetDetail : planet
             });
+            LoggerService.log(planet);
         }, error => {
+            LoggerService.log(error);
             alert(error.message)
         })
     }
 
     render(){
         const {planetDetail} = this.state;
+        LoggerService.log(planetDetail)
+        LoggerService.log("PlanetDetails:: render")
         return (
             <>
                 <div className="text-right mb-2">

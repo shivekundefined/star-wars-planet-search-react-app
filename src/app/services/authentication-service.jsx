@@ -2,6 +2,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { handleResponse } from '../helpers';
 import * as Config from '../../Config';
+import { LoggerService } from '../helpers/logger-service';
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
 export const authenticationService = {
@@ -35,9 +36,10 @@ function login(username, password) {
                 throw new Error('User/Password is incorrect');
             }
         }, error => {
+            LoggerService.log(error);
             throw new Error('Some Error occured. Please try again');
         })/* .catch( error => {
-            console.log(error);
+            LoggerService.log(error);
             alert("User/Password is incorrect 2")
         }); */    
 }

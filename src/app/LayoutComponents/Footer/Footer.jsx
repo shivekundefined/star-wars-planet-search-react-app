@@ -1,7 +1,9 @@
 import React from 'react'
 import { authenticationService } from '../../services';
+import { LoggerService } from '../../helpers/logger-service';
 
 const Footer = ({props}) => {
+    LoggerService.log(props)
     const footer_styles= {
             'backgroundColor': '#f5f5f5'
     }

@@ -1,35 +1,56 @@
 import React from 'react';
 import { authenticationService } from '../../services';
 import { ROUTES } from '../../../constants/Routes';
+import { LoggerService } from '../../helpers/logger-service';
 
 class Login extends React.Component{
-    private_default = ROUTES.DEFAULT_IF_LOGGED_IN
+    logged_in_success = ROUTES.SUCCESS_LOGGED_IN
     constructor(props){
         super(props);
+        LoggerService.log("Login:: Class Constructor")
         this.state = {
             userName: 'Luke Skywalker',
             password: '19BBY',
-            showError: false
+            showError: false,
+            submitted: false
         };
     }
     
     handleSubmit = (event) => {
         event.preventDefault();
-        authenticationService.login(this.state.userName, this.state.password).then( user => {
-            this.props.history.push(this.private_default)
-            //this.props.isLoggedIn = true;
-        }, error => {
-            alert(error.message)
-        } )
+        this.setState({ submitted: true });
+        const { userName, password } = this.state;
+        if (userName && password) {
+            authenticationService.login(userName, password).then( user => {
+                //this.props.isLoggedIn = true;
+                this.props.history.push(this.logged_in_success)
+            }, error => {
+                LoggerService.log(error);
+                this.setState({
+                    showError : true
+                })
+                alert(error.message)
+            } )
+        }
+        
         
     }
 
     render(){
-        const { showError } = this.state;
+        LoggerService.log("Login:: Render")
+        LoggerService.log(this.state);
+        const { showError, submitted, userName, password } = this.state;
+        LoggerService.log(showError);
         return (
             <div className="card-body">
                 <h5 className="card-title text-center">Welcome {this.state.userName}</h5>
-                <form className="form-signin" onSubmit={this.handleSubmit}>
+                {
+                    showError && <div className="alert alert-danger" role="alert">
+                                    <span >Please Enter Correct Username/Password</span>
+                                </div>
+                }
+                
+                <form className="form-signin" onSubmit={this.handleSubmit} noValidate>
                     <div className="form-label-group">
                         <input
                             id="inputEmail"
@@ -39,9 +60,12 @@ class Login extends React.Component{
                             onChange={event => this.setState({ userName: event.target.value })}
                             required
                             autoFocus
-                            className="form-control"
+                            className={'form-control' + (submitted && !userName ? ' is-invalid' : '')}
                         />
                         <label htmlFor="inputEmail">Email address</label>
+                        {submitted && !userName &&
+                            <div className="invalid-feedback">Username is required</div>
+                        }
                     </div>
 
                     <div className="form-label-group">
@@ -50,19 +74,18 @@ class Login extends React.Component{
                             type="password"
                             placeholder="Password"
                             value={this.state.password}
-                            onChange={event => this.setState({ password: event.target.value })}
                             required
-                            className="form-control"
+                            onChange={event => this.setState({ password: event.target.value })}
+                            className={'form-control' + (submitted && !userName ? ' is-invalid' : '')}
                         />
                         <label htmlFor="inputPassword">Password</label>
+                        {submitted && !password &&
+                            <div className="invalid-feedback">Password is required</div>
+                        }
                     </div>
                     <button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
                 </form>   
-                <div className="form-group">
-                    <div className="col-md-6">
-                        {showError && <span >Please Enter Correct Username/Password</span>}
-                    </div>
-                </div> 
+                
             </div>  
         );    
     }

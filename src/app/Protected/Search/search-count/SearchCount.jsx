@@ -1,10 +1,12 @@
 
 import React from 'react'
+import { LoggerService } from '../../../helpers/logger-service';
 
 export class SearchCount extends React.Component{
     oneMin = 60; // 60 seconds
     constructor(props){
         super(props)
+        LoggerService.log("SearchCount:: constructor")
         this.state = {
             searchCount: 0,
             lastSearchTime: new Date(),
@@ -32,6 +34,7 @@ export class SearchCount extends React.Component{
     checkIfUserReachedOneMinLimit(){
         let currentTime = new Date().getTime();
         let startTimer = new Date(this.state.lastSearchTime).getTime()
+        LoggerService.log(new Date(currentTime), new Date(startTimer) , currentTime >= startTimer , (Math.abs(currentTime - startTimer)/ 1000) ,((Math.abs(currentTime - startTimer)/ 1000) < 60))
         if(currentTime >= startTimer && ((Math.abs(currentTime - startTimer)/ 1000) < this.oneMin)){
             return true
         }else{
@@ -49,6 +52,8 @@ export class SearchCount extends React.Component{
         let current = new Date().getTime();
         let lastSearched = new Date(this.state.lastSearchTime).getTime()
         let timerToResetTime = ((this.oneMin * 1000) - ((Math.abs(current - lastSearched)/ 1000)) * 1000);
+        LoggerService.log("=====>>>" ,new Date(current), new Date(lastSearched), timerToResetTime, "<<<<=====")
+        LoggerService.log(timerToResetTime)
         setTimeout(()=> {
             this.resetSearchCounter()
         }, timerToResetTime);
@@ -58,7 +63,7 @@ export class SearchCount extends React.Component{
         let count =  this.state.searchCount;
         let current_Time = new Date().getMinutes();
         let lastTimeSearch = new Date(this.state.lastSearchTime).getMinutes();
-        console.warn(this.checkIfUserReachedOneMinLimit());
+        LoggerService.warn(this.checkIfUserReachedOneMinLimit());
         if((count >= this.props.searchLimit ) && (current_Time === lastTimeSearch) && this.checkIfUserReachedOneMinLimit()){
             //alert("Resetting")
             this.setState({
@@ -88,6 +93,8 @@ export class SearchCount extends React.Component{
     }
 
     render(){
+        
+        LoggerService.log("####+++++SearchCount:: Render+++++###")
         return (
             <>
                 {this.state.showAlert && <div className="alert alert-danger" role="alert">

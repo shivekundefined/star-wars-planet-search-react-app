@@ -1,3 +1,8 @@
+export const environment = {
+    production: false,
+    isDebugMode: true
+}    
+
 export const API_BASE_URL = 'https://swapi.co/api/'
 
 export const API = {

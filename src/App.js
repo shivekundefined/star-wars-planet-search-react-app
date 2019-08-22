@@ -10,21 +10,32 @@ import PrivateRoute from './app/shared/Protected';
 import NoMatch from './app/public/404/404';
 import { authenticationService } from './app/services';
 import "./sass/App.scss";
+import { LoggerService } from './app/helpers/logger-service';
+import { AppLoader } from './app/utilities/loader/Loader';
+
+
+const {AppContextLoader} = React.createContext()
+
 
 class App extends React.Component{
   public_routes = ROUTES.PUBLIC
   protected_routes = ROUTES.PROTECTED
-  public_default = ROUTES.DEFAULT_IF_NOT_LOGGED_IN;
+  default_route_if_not_logged_in = ROUTES.DEFAULT_IF_NOT_LOGGED_IN;
+  default_route_if_logged_in = ROUTES.DEFAULT_IF_LOGGED_IN;
 
   constructor(props){
     super(props);
+    console.log("App Component:: Constructor");
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
+      displayLoader: false
     }
+    console.log(props);
+    
   }
 
-  componentWillMount() {
-    let user = JSON.parse(localStorage.getItem('currentUser'))
+  componentDidMount(){
+    /* let user = JSON.parse(localStorage.getItem('currentUser'))
     if(user){
       authenticationService.isLoggedIn = true
         this.setState({
@@ -33,8 +44,11 @@ class App extends React.Component{
     }else{
       localStorage.clear();
       authenticationService.isLoggedIn = false
-    }
-    /* authenticationService.currentUser.subscribe( user => {
+    } */
+  }
+
+  componentWillMount() {
+    authenticationService.currentUser.subscribe( user => {
       if(user){
         authenticationService.isLoggedIn = true
         this.setState({
@@ -43,12 +57,16 @@ class App extends React.Component{
       }else{
         localStorage.clear();
         authenticationService.isLoggedIn = false
+        this.setState({
+          isLoggedIn: false
+        });
       }
-    }) */
+    })
   }
 
    
   render(){
+    console.log("App Component:: Render");
     return ( 
         <>
          {/*  <div className="stars"></div>
@@ -57,15 +75,37 @@ class App extends React.Component{
           <div className="App"> 
             <Router>
               <Switch>
+              
                 <Route 
                     path={this.public_routes } 
                     render={ () => <LoginLayout isLoggedIn={this.state.isLoggedIn} />} />
                 <PrivateRoute path={this.protected_routes} 
                     isLoggedIn={this.state.isLoggedIn} 
                     component={MainLayout} />
-                <Route component={NoMatch} />
+                <Route exact path="/"
+                render={ 
+                    props => this.state.isLoggedIn ? (
+                      <Redirect
+                        to={{
+                          pathname: this.default_route_if_logged_in,
+                          state: { from: this.props.location }
+                        }}
+                      />
+                    ) : (
+                      <Redirect
+                        to={{
+                          pathname: this.default_route_if_not_logged_in,
+                          state: { from: this.props.location }
+                        }}
+                      />
+                    )
+                  } />
+
+                <Route exact component={NoMatch} /> 
+                
               </Switch>
             </Router>
+            {/* <AppLoader /> */}
           </div>
         </>
     );

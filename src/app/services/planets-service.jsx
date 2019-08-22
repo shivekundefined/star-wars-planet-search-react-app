@@ -1,6 +1,7 @@
 
 import { handleResponse } from '../helpers';
 import * as Config from '../../Config';
+import { LoggerService } from '../helpers/logger-service';
 
 const planet_details = (planetId) => {
     let apiURL = Config.API.PLANET_DETAILS_API + planetId + '/'
@@ -14,6 +15,7 @@ const planet_details = (planetId) => {
                 //return {}
             }
         }, error => {
+            LoggerService.log(error);
             throw new Error('Some Error occured. Please try again');
         })
 }
@@ -29,6 +31,7 @@ const planet_search = (searchText) => {
                 return []
             }
         }, error => {
+            LoggerService.log(error);
             throw new Error('Some Error occured. Please try again');
         })
 }
