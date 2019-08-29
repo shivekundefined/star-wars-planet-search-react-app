@@ -26,6 +26,7 @@ export class SearchBar extends React.Component{
                     type="text"
                     className="form-control"
                     placeholder="Search..."
+                    autoComplete="off"
                     value={filterText}
                     autoFocus
                     onChange={this.handleSearchTextChange} 

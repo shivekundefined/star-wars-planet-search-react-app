@@ -12,6 +12,7 @@ export class PlanetDetails extends React.Component{
             planetDetail: {},
 
         }
+        LoggerService.log(props)
     }
 
     componentDidMount(){
@@ -20,12 +21,15 @@ export class PlanetDetails extends React.Component{
     }
 
     getPlanetDetails(planetId){
+        this.props.context.showLoader()
         planetService.planet_details(planetId).then( planet => {
+            this.props.context.hideLoader()
             this.setState({
                 planetDetail : planet
             });
             LoggerService.log(planet);
         }, error => {
+            this.props.context.hideLoader()
             LoggerService.log(error);
             alert(error.message)
         })

@@ -1,4 +1,4 @@
-#appLoader{
+.loader-backdrop{
     position: fixed;
     top: 0;
     right: 0;
@@ -8,6 +8,20 @@
     background:rgba(38, 54, 69, 0.9);
     overflow: hidden;
     display: flex;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+body.modal-open{
+    .loader-backdrop{
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1.0);
+        transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+    }
+    
 }
 
 #rocket{

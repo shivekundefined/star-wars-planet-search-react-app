@@ -1,7 +1,7 @@
 export const ROUTES = {
     PUBLIC: [
         "/login",
-        "/register"
+        "/register",
     ],
     PROTECTED: [
         "/search-planet",

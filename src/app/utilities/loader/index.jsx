@@ -3,18 +3,14 @@
 import React from 'react';
 import { LoggerService } from '../../helpers/logger-service';
 import './Loader.scss'
+import {AppContextLoader} from '../../Providers/Context'
 
-export class AppLoader extends React.Component{
-    constructor(props){
-        super(props);
-        LoggerService.log("Loader Component:: contructor")
-    }
 
-    render(){
-        return(
-            <>
-                
-            <div id="appLoader">
+const AppLoader = () => {
+    let { state, dispatch } = React.useContext(AppContextLoader);
+    return(
+        <React.Fragment>
+            <div id="appLoader" className="loader-backdrop">
                 <svg id="rocket" version="1.1" x="0px" y="0px" width="307px" height="283px" >
                     <g className="rocket_wrap">
                     <circle cx="147.5" cy="138.6" r="105.5" className="icon_circle"/>
@@ -53,10 +49,8 @@ export class AppLoader extends React.Component{
                     </g>
                 </svg>
             </div>
-            </>
-
-        )
-    }
-
-
+        </React.Fragment>
+    )
 }
+
+export default AppLoader

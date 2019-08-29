@@ -11,6 +11,10 @@ html, body{
     user-select: none; /* Standard syntax */
 }
 
+.container{
+    height: 100%;
+}
+
 .col{
     padding-top: .75rem;
     padding-bottom: .75rem;

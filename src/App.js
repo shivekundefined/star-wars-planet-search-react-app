@@ -3,18 +3,16 @@ import React from 'react';
 import './App.css';
 
 import {BrowserRouter as Router, Route, Redirect, Switch, StaticRouter} from 'react-router-dom';
-import { LoginLayout } from './app/Layouts/Login/LoginLayout';
+import AppLoaderProvider from './app/Providers/AppLoaderProvider/index';
+import { LoginLayout } from './app/Layouts/LoginLayout';
 import { ROUTES } from './constants/Routes';
-import { MainLayout } from './app/Layouts/Main/MainLayout';
+import { MainLayout } from './app/Layouts/MainLayout';
 import PrivateRoute from './app/shared/Protected';
-import NoMatch from './app/public/404/404';
+import NoMatch from './app/public/404';
 import { authenticationService } from './app/services';
 import "./sass/App.scss";
 import { LoggerService } from './app/helpers/logger-service';
-import { AppLoader } from './app/utilities/loader/Loader';
-
-
-const {AppContextLoader} = React.createContext()
+import AppLoader from './app/utilities/Loader';
 
 
 class App extends React.Component{
@@ -25,12 +23,12 @@ class App extends React.Component{
 
   constructor(props){
     super(props);
-    console.log("App Component:: Constructor");
+    LoggerService.log("App Component:: Constructor");
     this.state = {
       isLoggedIn: false,
       displayLoader: false
     }
-    console.log(props);
+    LoggerService.log(props);
     
   }
 
@@ -66,47 +64,48 @@ class App extends React.Component{
 
    
   render(){
-    console.log("App Component:: Render");
+    LoggerService.log("App Component:: Render");
     return ( 
         <>
          {/*  <div className="stars"></div>
           <div className="twinkling"></div>
           <div className="clouds"></div> */}
-          <div className="App"> 
-            <Router>
-              <Switch>
-              
-                <Route 
-                    path={this.public_routes } 
-                    render={ () => <LoginLayout isLoggedIn={this.state.isLoggedIn} />} />
-                <PrivateRoute path={this.protected_routes} 
-                    isLoggedIn={this.state.isLoggedIn} 
-                    component={MainLayout} />
-                <Route exact path="/"
-                render={ 
-                    props => this.state.isLoggedIn ? (
-                      <Redirect
-                        to={{
-                          pathname: this.default_route_if_logged_in,
-                          state: { from: this.props.location }
-                        }}
-                      />
-                    ) : (
-                      <Redirect
-                        to={{
-                          pathname: this.default_route_if_not_logged_in,
-                          state: { from: this.props.location }
-                        }}
-                      />
-                    )
-                  } />
-
-                <Route exact component={NoMatch} /> 
-                
-              </Switch>
-            </Router>
-            {/* <AppLoader /> */}
-          </div>
+          <AppLoaderProvider>
+            <div className="App"> 
+                  <Router>
+                    <Switch>
+                    
+                      <Route 
+                          path={this.public_routes } 
+                          render={ () => <LoginLayout isLoggedIn={this.state.isLoggedIn} />} />
+                      <PrivateRoute path={this.protected_routes} 
+                          isLoggedIn={this.state.isLoggedIn} 
+                          component={MainLayout} />
+                      <Route exact path="/"
+                      render={ 
+                          props => this.state.isLoggedIn ? (
+                            <Redirect
+                              to={{
+                                pathname: this.default_route_if_logged_in,
+                                state: { from: this.props.location }
+                              }}
+                            />
+                          ) : (
+                            <Redirect
+                              to={{
+                                pathname: this.default_route_if_not_logged_in,
+                                state: { from: this.props.location }
+                              }}
+                            />
+                          )
+                        } />
+                      <Route exact component={NoMatch} /> 
+                    </Switch>
+                  </Router>
+                 <AppLoader />
+              </div>
+          </AppLoaderProvider>
+            
         </>
     );
   }
@@ -114,4 +113,4 @@ class App extends React.Component{
 }
 
 
-export default App;
+export default App ;

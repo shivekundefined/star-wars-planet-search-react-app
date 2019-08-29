@@ -94,3 +94,14 @@
         text-transform: uppercase;
         font-size: 18px;
     }
+
+.planet-card{
+    min-height: 240px;
+
+    .card-image{
+        min-height: 190px;
+        .planet-image{
+            min-height: inherit;
+        }
+    }
+}    

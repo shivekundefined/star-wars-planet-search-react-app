@@ -1,6 +1,6 @@
 
 import React from 'react'
-import Planet from '../planets/Planets';
+import Planet from '../Planet';
 import { LoggerService } from '../../../helpers/logger-service';
 
 export class PlanetsList extends React.Component{
