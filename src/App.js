@@ -2,7 +2,7 @@ import React from 'react';
 //import  { ReactComponent as Logo } from './logo.svg';
 import './App.css';
 
-import {BrowserRouter as Router, Route, Redirect, Switch, StaticRouter} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Redirect, Switch} from 'react-router-dom';
 import AppLoaderProvider from './app/Providers/AppLoaderProvider/index';
 import { LoginLayout } from './app/Layouts/LoginLayout';
 import { ROUTES } from './constants/Routes';
@@ -28,7 +28,7 @@ class App extends React.Component{
       isLoggedIn: false,
       displayLoader: false
     }
-    LoggerService.log(props);
+    //LoggerService.log(props);
     
   }
 
@@ -64,7 +64,7 @@ class App extends React.Component{
 
    
   render(){
-    LoggerService.log("App Component:: Render");
+    //LoggerService.log("App Component:: Render");
     return ( 
         <>
          {/*  <div className="stars"></div>

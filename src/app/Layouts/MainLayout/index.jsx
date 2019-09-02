@@ -3,10 +3,9 @@
 import React from 'react';
 import Header from '../../LayoutComponents/Header';
 import Footer from '../../LayoutComponents/Footer';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 //import starWarsLogo from './assets/images/star-wars-logo.png'
 import NoMatch from '../../public/404';
-import { authenticationService } from '../../services/authentication-service';
 import { LoggerService } from '../../helpers/logger-service';
 import {AppContextLoader} from '../../Providers/Context'
 import { PlanetSearch } from '../../Protected/Search/PlanetSearch';

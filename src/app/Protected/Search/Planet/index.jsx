@@ -32,7 +32,7 @@ const Planet = (props) => {
             },
             planetImage: 'planet-0.svg'
         }
-        if(population == "unknown"){
+        if(population === "unknown"){
             return planet_style_default
         }
         for(let i = 0; i < population_range.length; i++){
@@ -61,7 +61,6 @@ const Planet = (props) => {
     let planetId = splittedUrl.length && splittedUrl[splittedUrl.length - 2];
     //let planet_image = Math.floor(Math.random() * 9) + 1  ;
     const planetSize = setPlanetSize(planetDetail.population);
-    console.log(planetSize)
     return(
         <>
             <Link className="col-md-4 mb-5 planet-card" to={`/planet-details/${planetId}`}>

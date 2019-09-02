@@ -20,13 +20,13 @@ const planet_details = (planetId) => {
         })
 }
 
-const planet_search = (searchText) => {
+const planet_search = (searchText, page = 1) => {
     let apiURL = Config.API.PLANET_SEARCH_API
-    return fetch(apiURL + searchText + '&format=json')
+    return fetch(apiURL + searchText + `&page=${page}&format=json`)
         .then(handleResponse)
         .then(response => {
             if(response.results.length) {
-                return response.results;
+                return response;
             }else{
                 return []
             }

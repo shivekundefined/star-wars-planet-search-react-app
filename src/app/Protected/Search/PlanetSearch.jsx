@@ -1,6 +1,6 @@
 
 
-import React, { useContext } from 'react'
+import React from 'react'
 import { SearchBar } from './SearchBar';
 import { planetService } from '../../services/planets-service';
 import { LoggerService } from '../../helpers/logger-service';
@@ -12,14 +12,17 @@ export class PlanetSearch extends React.Component{
     debounceTimeout = null;
     searchLimit = 3;
     displayResultFlag = false;
+    nextPageNum;
     constructor(props){
         super(props);
-        LoggerService.warn("==============", props);
+        //LoggerService.warn("==============", props);
         this.state = {
             filterText: '',
             planets : [],
             allowSearch : true,
-            triggerLimitizerCount : 0
+            triggerLimitizerCount : 0,
+            enableLoadMore: false,
+            searchText: ''
         };
 
         if(props.user.name === "Luke Skywalker"){
@@ -27,6 +30,7 @@ export class PlanetSearch extends React.Component{
         }
         this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
         this.handleSearchAllowed = this.handleSearchAllowed.bind(this);
+        this.loadMoreResult = this.loadMoreResult.bind(this);
         
     }
 
@@ -56,40 +60,66 @@ export class PlanetSearch extends React.Component{
         }
         let count = this.state.triggerLimitizerCount;
         this.setState({
-            triggerLimitizerCount: ++count
+            triggerLimitizerCount: ++count,
+            searchText: searchedText
         })
 
-        //Make API Call to get Data and Add Loader screen
-        this.props.context.showLoader()
-        planetService.planet_search(searchedText).then( planetsList => {
-            this.props.context.hideLoader()
-            if(planetsList.length){
-                this.displayResultFlag = true
-                this.setState({
-                    planets: planetsList
-
-                });
-                LoggerService.warn(this.state)
-            }else{
-                this.displayResultFlag = true
-                this.resetPlanetList()
-            }
+        //Allow Search Only if user has not reached limit
+        if(this.state.allowSearch){
+            //Make API Call to get Data and Add Loader screen
+            this.getPlanetsList(searchedText)
             
-        }, error => {
-            this.props.context.hideLoader()
-            LoggerService.log(error);
-            this.displayResultFlag = false
-            this.resetPlanetList()
-            alert(error.message)
-        })
+        }
+    }
+
+    getPlanetsList(searchedText, page = 1){
+        this.props.context.showLoader()
+            planetService.planet_search(searchedText, page).then( response => {
+                this.props.context.hideLoader()
+                if(response.results && response.results.length){
+
+                    let data = {}
+                    this.displayResultFlag = true;
+                    if(response.next !== '' && response.next != null){
+                        data.enableLoadMore = true;
+                        let pageNumString = response.next.split('&').find( str => str.includes("page"));
+                        let pageNumSplit = pageNumString.split("=")
+                        if(pageNumSplit){
+                            this.nextPageNum = pageNumSplit[1]
+                        }
+                    }else{
+                        data.enableLoadMore = false
+                    }
+                    data.planets = [...this.state.planets, ...response.results ]; 
+                    //data.planets = response.results ; 
+                    this.setState(data);
+
+                }else{
+
+                    this.displayResultFlag = true
+                    this.resetPlanetList()
+                }
+                
+            }, error => {
+                this.props.context.hideLoader()
+                LoggerService.log(error);
+                this.displayResultFlag = false
+                this.resetPlanetList()
+                alert(error.message)
+            })
+    }
+
+    loadMoreResult(){
+        console.log("loadMoreResult");
+        const pageNum = this.nextPageNum
+        this.getPlanetsList(this.state.searchText, pageNum)
     }
 
     resetPlanetList(){
-        
         this.setState({
-            planets: []
+            planets: [],
+            enableLoadMore: false
         })
-
     }
 
     handleSearchAllowed(isAllowed){
@@ -100,15 +130,14 @@ export class PlanetSearch extends React.Component{
 
     render(){
         let planetList;
-        const {planets, triggerLimitizerCount, filterText, allowSearch} = this.state;
+        const {planets, triggerLimitizerCount, filterText, allowSearch, enableLoadMore} = this.state;
 
-        LoggerService.log(this.displayResultFlag)
+        //LoggerService.log(this.displayResultFlag)
         if(planets.length > 0 && this.displayResultFlag){
-            planetList = planets.length > 0 && <PlanetsList planets={planets}/>
+            planetList = planets.length > 0 && <PlanetsList planets={planets} loadMore={enableLoadMore} fetch={this.loadMoreResult}/>
         }else if(this.displayResultFlag){
             planetList = <h4 className="text-center"> No planet with this name </h4>
         }
-
 
         return(
             <>

@@ -10,7 +10,7 @@ export class PlanetsList extends React.Component{
     }
 
     render(){
-        LoggerService.log("PlanetsList:: Render");
+        //LoggerService.log("PlanetsList:: Render");
 
         return (
             <>
@@ -24,6 +24,14 @@ export class PlanetsList extends React.Component{
                     this.props.planets.map((planetDetail, index) => <Planet key={index} planetDetail={planetDetail} />)
                 }
                 </div>
+                {
+                    this.props.loadMore && 
+                    <div className="row">
+                        <div className="col-md-12 ">
+                            <button className="btn btn-outline-info" type="button" onClick={this.props.fetch} >Load More</button>
+                        </div>
+                    </div>
+                }
             </>
         )
     }

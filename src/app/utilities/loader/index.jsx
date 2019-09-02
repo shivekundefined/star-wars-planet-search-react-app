@@ -1,13 +1,12 @@
 
 
 import React from 'react';
-import { LoggerService } from '../../helpers/logger-service';
 import './Loader.scss'
-import {AppContextLoader} from '../../Providers/Context'
+//import {AppContextLoader} from '../../Providers/Context'
 
 
 const AppLoader = () => {
-    let { state, dispatch } = React.useContext(AppContextLoader);
+    // let { state, dispatch } = React.useContext(AppContextLoader);
     return(
         <React.Fragment>
             <div id="appLoader" className="loader-backdrop">

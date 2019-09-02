@@ -1,11 +1,10 @@
 
 import React from 'react'
-import { LoggerService } from '../../../helpers/logger-service';
 
 export class SearchBar extends React.Component{
     constructor(props){
         super(props)
-        LoggerService.log("SearchBar:: constructor");
+        //LoggerService.log("SearchBar:: constructor");
         this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
     }
 
@@ -15,8 +14,8 @@ export class SearchBar extends React.Component{
     }
 
     render(){
-        LoggerService.log("SearchBar:: Render")
-        LoggerService.log("=====>>>"+ this.props.allowSearch)
+        //LoggerService.log("SearchBar:: Render")
+        //LoggerService.log("=====>>>"+ this.props.allowSearch)
         const filterText = this.props.filterText;
         return (
             <form>
