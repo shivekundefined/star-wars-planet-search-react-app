@@ -72,7 +72,7 @@ export class PlanetSearch extends React.Component{
         }
     }
 
-    getPlanetsList(searchedText, page = 1){
+    getPlanetsList(searchedText, page = 1, loadmore = false){
         this.props.context.showLoader()
             planetService.planet_search(searchedText, page).then( response => {
                 this.props.context.hideLoader()
@@ -90,8 +90,11 @@ export class PlanetSearch extends React.Component{
                     }else{
                         data.enableLoadMore = false
                     }
-                    data.planets = [...this.state.planets, ...response.results ]; 
-                    //data.planets = response.results ; 
+                    if(loadmore){
+                        data.planets = [...this.state.planets, ...response.results ]; 
+                    }else{
+                        data.planets = response.results ; 
+                    }
                     this.setState(data);
 
                 }else{
@@ -110,9 +113,11 @@ export class PlanetSearch extends React.Component{
     }
 
     loadMoreResult(){
+
         console.log("loadMoreResult");
-        const pageNum = this.nextPageNum
-        this.getPlanetsList(this.state.searchText, pageNum)
+        const pageNum = this.nextPageNum;
+        const LoadMoreClicked = true;
+        this.getPlanetsList(this.state.searchText, pageNum, LoadMoreClicked)
     }
 
     resetPlanetList(){
